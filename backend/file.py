@@ -25,6 +25,10 @@ class FileBackend:
                 json.dump(self.cache, f, indent=2)
 
     def set(self, key, value, expire_at=None):
+        try:
+            json.dumps(value)  # Test si la valeur est sérialisable
+        except TypeError:
+            raise ValueError("La valeur à stocker doit être JSON-serializable")
         with self.lock:
             self.cache[key] = {
                 'value': value,
