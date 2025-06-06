@@ -1,5 +1,5 @@
 import time
-from .backends.memory import MemoryBackend
+from .backend.memory import MemoryBackend
 
 class BrainCache:
     def __init__(self, backend=None):
