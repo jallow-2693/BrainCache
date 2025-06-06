@@ -1,4 +1,5 @@
 import functools
+import json
 from .core import BrainCache
 
 _default_cache = BrainCache()
@@ -7,7 +8,11 @@ def cache(ttl=60):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            key = f"{func.__name__}:{args}:{kwargs}"
+            # Clé de cache robuste
+            try:
+                key = f"{func.__name__}:{args}:{json.dumps(kwargs, sort_keys=True)}"
+            except TypeError:
+                key = f"{func.__name__}:{args}:{str(kwargs)}"
             result = _default_cache.get(key)
             if result is None:
                 result = func(*args, **kwargs)
